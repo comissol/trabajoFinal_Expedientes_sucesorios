@@ -741,8 +741,28 @@ const spec = {
         "parameters": [
           {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
         ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["descripcion"],
+                "properties": {
+                  "descripcion": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "example": "Casa de dos pisos"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {"description": "Bien actualizado"},
+          "400": {"description": "Datos inválidos"},
           "401": {"description": "No autenticado"},
           "403": {"description": "Acceso denegado"},
           "404": {"description": "Bien no encontrado"}
@@ -803,8 +823,38 @@ const spec = {
         "parameters": [
           {"name": "id", "in": "path", "required": true, "schema": {"type": "integer"}}
         ],
+        "requestBody": {
+          "required": true,
+          "description": "Enviá al menos uno de estado, motivo o descripcion. Si estado es \"No aplica\", motivo es obligatorio.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "minProperties": 1,
+                "properties": {
+                  "estado": {
+                    "type": "string",
+                    "enum": ["Pendiente", "Recibido", "Validado", "No aplica"],
+                    "example": "Validado"
+                  },
+                  "motivo": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "No corresponde a este expediente"
+                  },
+                  "descripcion": {
+                    "type": "string",
+                    "maxLength": 255,
+                    "example": "Partida de nacimiento actualizada"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {"description": "Documento actualizado"},
+          "400": {"description": "Datos inválidos"},
           "401": {"description": "No autenticado"},
           "403": {"description": "Acceso denegado"}
         }
