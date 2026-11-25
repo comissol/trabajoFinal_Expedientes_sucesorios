@@ -25,12 +25,6 @@ export const crearExpediente = {
     observaciones: texto('observaciones', 5000).optional(),
     // Todo expediente nace en "Iniciado": si no viene, se completa solo (tu modelo no tiene valor por defecto)
     etapa: z.literal('Iniciado', { error: 'Un expediente nuevo siempre empieza en Iniciado' }).default('Iniciado'),
-    // El causante se registra junto con el expediente. Es opcional hasta que tu service lo cree;
-    // cuando lo haga, borrá el ".optional()" para volverlo obligatorio.
-    causante: z.strictObject({
-      nombreCompleto: texto('causante.nombreCompleto', 150),
-      dni: texto('causante.dni', 15).optional(),
-    }).optional(),
   }),
 };
 
