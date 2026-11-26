@@ -22,8 +22,15 @@ export const authenticateUser = async ({ username, password }) => {
 };
 
 export const createUser = async ({ username, nombre, password, rol }) => {
+    const existingUser = await Usuario.findOne({
+        where: { username },
+    });
+    if (existingUser) {
+        const error = new Error(`El nombre de usuario "${username}" ya existe.`);
+        error.code = "USERNAME_EXISTS";
+        throw error;
+    }
     const user = await Usuario.create({ username, nombre, password, rol });
-
     return {
         id: user.id,
         username: user.username,

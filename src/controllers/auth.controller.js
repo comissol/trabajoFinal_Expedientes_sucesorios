@@ -26,9 +26,12 @@ export const register = async (req, res, next) => {
     try {
         const { username, nombre, password, rol } = req.body;
         const createdUser = await createUser({ username, nombre, password, rol });
-
         return res.status(201).json(createdUser);
     } catch (err) {
+    if (err.code === "USERNAME_EXISTS") {
+        return res.status(409).json({
+            message: err.message || "El nombre de usuario ya existe." });
+    }
         return next(err);
     }
 };

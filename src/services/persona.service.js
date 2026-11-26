@@ -1,15 +1,23 @@
 import { Persona } from '../models/persona.model.js';
 import { Expediente } from '../models/expediente.model.js';
+import { Juzgado } from '../models/juzgado.model.js';
 
 export async function getPersonaById(expedienteId) {
-  const expediente = await Expediente.findOne({ 
-    where: { id: expedienteId, fechaBaja: null }
+  const expediente = await Expediente.findOne({ where: { id: expedienteId, fechaBaja: null },
+  attributes: ['caratula','numeroExpediente'], include: [{model: Juzgado, attributes: ['descripcion'], as: 'juzgados'}]
   });
   if (!expediente) return null;
-  return Persona.findAll({ 
-    attributes: ['id', 'dni', 'nombreCompleto', 'rol'],
-    where: { expedienteId }, order: [['id', 'ASC']] });
+
+  const personas = await Persona.findAll({
+    where: { expedienteId },
+    attributes: ['id', 'dni', 'nombreCompleto', 'rol']
+  });
+  return {
+    expediente,
+    personas
+  };
 }
+
 
 export async function createPersona(expedienteId, data) {
   const expediente = await Expediente.findByPk(expedienteId);
